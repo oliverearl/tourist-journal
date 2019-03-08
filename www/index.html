@@ -38,6 +38,7 @@
 </head>
 <body>
 
+<!-- Homepage -->
 <article id="home_page" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
   <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
     <div>
@@ -48,7 +49,7 @@
   <section data-role="content">
     <section id="main_text" role="main">
       <header>
-        <h2>Fluid Grids: Now with fluidity and media queries</h2>
+        <h2>All About This App</h2>
       </header>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
@@ -81,7 +82,7 @@
          data-height="500"
          data-theme="light"
          href="https://twitter.com/notoliverearl?ref_src=twsrc%5Etfw">
-        Tweets
+        Developer's Tweets:
       </a>
       <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" type="application/javascript"></script>
     </section>
@@ -94,10 +95,10 @@
           <a class="ui-btn-active ui-state-persist" data-role="tab" data-icon="home">Home</a>
         </li>
         <li>
-          <a href="#sessions" data-role="tab" data-icon="plus">Add Entry</a>
+          <a href="#add" data-role="tab" data-icon="plus">Add Entry</a>
         </li>
         <li>
-          <a href="#sessions" data-role="tab" data-icon="bars">List Entries</a>
+          <a href="#entries" data-role="tab" data-icon="bars">List Entries</a>
         </li>
         <li>
           <a href="#map" data-role="tab" data-icon="location">Map</a>
@@ -106,39 +107,36 @@
     </nav>
   </footer>
 </article>
+<!-- End Homepage -->
 
-<article id="sessions" role="document" aria-live="assertive" aria-atomic="true" data-role="page" data-title="Sessions">
+<!-- Add Entry -->
+<article id="add" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
   <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
-    <div class="logo">
-      <img src="logo.jpg" alt="The conference home page logo"/>
-    </div>
-
     <div>
-      <h1>The Future of the Web Conference</h1>
+      <h1>I'm a Tourist!</h1>
     </div>
-
-    <nav data-role="navbar">
-      <ul >
-        <li><a href="/">Latest Posts</a></li>
-        <li><a href="talks">Talks</a></li>
-        <li><a href="speakers">Speakers</a></li>
-        <li><a href="contact">Contact Us</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <section data-role="content" class="indexPos" id="sessions-list-content">
-
+  <section data-role="content">
+    <section id="main_text" role="main">
+      <header>
+        <h2>Add Entry</h2>
+      </header>
+      <!-- TODO: Add Entry Form -->
+    </section>
   </section>
 
   <footer data-role="footer" data-position="fixed" data-theme="b">
     <nav data-role="navbar">
       <ul>
         <li>
-          <a data-icon="home" href="#home_page" data-role="tab">Home</a>
+          <a href="#home_page" data-role="tab" data-icon="home">Home</a>
         </li>
         <li>
-          <a class="ui-btn-active ui-state-persist" data-role="tab" data-icon="bars">Sessions</a>
+          <a class="ui-btn-active ui-state-persist" data-role="tab" data-icon="plus">Add Entry</a>
+        </li>
+        <li>
+          <a href="#entries" data-role="tab" data-icon="bars">List Entries</a>
         </li>
         <li>
           <a href="#map" data-role="tab" data-icon="location">Map</a>
@@ -146,50 +144,82 @@
       </ul>
     </nav>
   </footer>
-
 </article>
+<!-- End Add Entry -->
 
-<article id="map" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
-  <header id="maptitle" class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
-    <header class="logo">
-      <img src="logo.jpg" alt="The conference home page logo"/>
-    </header>
-
+<!-- Add List Entries -->
+<article id="entries" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
+  <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
     <div>
-      <h1>The Future of the Web Conference</h1>
+      <h1>I'm a Tourist!</h1>
     </div>
-
-    <nav data-role="navbar">
-      <ul >
-        <li><a href="/">Latest Posts</a></li>
-        <li><a href="talks">Talks</a></li>
-        <li><a href="speakers">Speakers</a></li>
-        <li><a href="contact">Contact Us</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <section id="mapPos" role="application" data-role="content">
-    <!-- Content is dynamically added -->
+  <section data-role="content">
+    <section id="main_text" role="main">
+      <header>
+        <h2>List Entries</h2>
+      </header>
+      <section data-role="content" class="indexPos" id="sessions-list-content">
+        <!-- TODO: Add Entries Form -->
+      </section>
+    </section>
   </section>
 
-  <footer id="mapfooter" data-role="footer" data-position="fixed" data-theme="b">
+  <footer data-role="footer" data-position="fixed" data-theme="b">
     <nav data-role="navbar">
       <ul>
         <li>
-          <a data-icon="home" href="#home_page" data-role="tab">Home</a>
+          <a href="#home_page" data-role="tab" data-icon="home">Home</a>
         </li>
         <li>
-          <a data-icon="bars" href="#sessions" data-role="tab">Sessions</a>
+          <a href="#add" data-role="tab" data-icon="plus">Add Entry</a>
         </li>
         <li>
-          <a class="ui-btn-active ui-state-persist" data-icon="location" data-role="tab">Map</a>
+          <a class="ui-btn-active ui-state-persist"  data-role="tab" data-icon="bars">List Entries</a>
+        </li>
+        <li>
+          <a href="#map" data-role="tab" data-icon="location">Map</a>
         </li>
       </ul>
     </nav>
   </footer>
-
 </article>
+<!-- End List Entries -->
+
+<!-- Add Map -->
+<article id="map" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
+  <header id="maptitle" class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
+    <div>
+      <h1>I'm a Tourist!</h1>
+    </div>
+  </header>
+
+  <section id="mapPos" role="application" data-role="content">
+    <!-- Content is dynamically added -->
+    <!-- TODO: Map -->
+  </section>
+
+  <footer data-role="footer" data-position="fixed" data-theme="b">
+    <nav data-role="navbar">
+      <ul>
+        <li>
+          <a href="#home_page" data-role="tab" data-icon="home">Home</a>
+        </li>
+        <li>
+          <a href="#add" data-role="tab" data-icon="plus">Add Entry</a>
+        </li>
+        <li>
+          <a href="#entries" data-role="tab" data-icon="bars">List Entries</a>
+        </li>
+        <li>
+          <a class="ui-btn-active ui-state-persist"  data-role="tab" data-icon="location">Map</a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+</article>
+<!-- End Map -->
 
 </body>
 </html>
