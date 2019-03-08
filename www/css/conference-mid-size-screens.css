@@ -1,0 +1,54 @@
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+.logo {
+    float: left;
+    display: block;
+}
+
+
+header.page_header h1 {
+    text-align: left;
+    height: 2.5em;
+    padding-top: 0.8em;
+    width: 67.3913%;
+    float: left;
+    margin-left: 5.4347826%;
+}
+
+header.page_header nav {
+    text-align: left;
+    clear: both;
+}
+
+header.page_header nav ul li {
+    padding: 0 20px 0 0;
+}
+
+header.page_header nav ul li a {
+    font-size: 1em;
+}
+
+aside {
+    float: right;
+    width: 19.736842%;
+    margin-left: 0.65789474%;
+    font-size: 1.25em;
+}
+
+section#twitter_output a {
+    padding-left: 1.0869565%;
+}
+
+section#twitter_output p {
+	 padding: 1.0869565%;
+}
+
+section#twitter_output h4 {
+    padding-left: 1.0869565%;
+}

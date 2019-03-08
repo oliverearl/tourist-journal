@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <title>I'm a Tourist Application</title>
+
+  <!-- HTML5 Shiv for non-supporting browsers. -->
+  <!--[if lt IE 9]>
+  <script src="lib/html5shiv.js" type="application/javascript" ></script>
+  <![endif]-->
+
+  <!-- Stylesheets, starting with jQuery Mobile, in mobile-first order -->
+  <link href="lib/jqm/jquery.mobile-1.4.5.min.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="css/conference-mobile-first.css"/>
+  <link rel="stylesheet" type="text/css" href="css/conference-mid-size-screens.css"
+        media="all and (min-width: 527px) and (max-width: 684px)"/>
+  <link rel="stylesheet" type="text/css" href="css/conference-large-screens.css"
+        media="all and (min-width: 685px)"/>
+
+  <!-- Shiv for those lacking both JavaScript and Media Query support -->
+  <!--[if (lt IE 9)&(!IEMobile)]>
+  <link rel="stylesheet" type="text/css" href="css/conference-large-screens.css" media="all"/>
+  <![endif]-->
+
+  <!-- Scripts -->
+  <!-- Libraries -->
+  <script src="lib/jq/jquery-1.12.0.min.js" type="application/javascript"></script>
+  <script src="phonegap.js" type="application/javascript"></script> <!-- If PhoneGap Library present -->
+  <script src="lib/yqlgeo/yqlgeo.js" type="application/javascript"></script>
+  <script src="lib/jqm/jquery.mobile-1.4.5.min.js" type="application/javascript"></script>
+
+  <!-- Application -->
+  <script src="app/App.js" type="application/javascript"></script>
+</head>
+<body>
+
+<article id="home_page" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
+  <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
+    <div>
+      <h1>I'm a Tourist!</h1>
+    </div>
+  </header>
+
+  <section data-role="content">
+    <section id="main_text" role="main">
+      <header>
+        <h2>Fluid Grids: Now with fluidity and media queries</h2>
+      </header>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+    </section>
+    <section id="twitter_output" role="complementary">
+      <a class="twitter-timeline"
+         data-lang="en"
+         data-height="500"
+         data-theme="light"
+         href="https://twitter.com/notoliverearl?ref_src=twsrc%5Etfw">
+        Tweets
+      </a>
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" type="application/javascript"></script>
+    </section>
+  </section>
+
+  <footer data-role="footer" data-position="fixed" data-theme="b">
+    <nav data-role="navbar">
+      <ul>
+        <li>
+          <a class="ui-btn-active ui-state-persist" data-role="tab" data-icon="home">Home</a>
+        </li>
+        <li>
+          <a href="#sessions" data-role="tab" data-icon="plus">Add Entry</a>
+        </li>
+        <li>
+          <a href="#sessions" data-role="tab" data-icon="bars">List Entries</a>
+        </li>
+        <li>
+          <a href="#map" data-role="tab" data-icon="location">Map</a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+</article>
+
+<article id="sessions" role="document" aria-live="assertive" aria-atomic="true" data-role="page" data-title="Sessions">
+  <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
+    <div class="logo">
+      <img src="logo.jpg" alt="The conference home page logo"/>
+    </div>
+
+    <div>
+      <h1>The Future of the Web Conference</h1>
+    </div>
+
+    <nav data-role="navbar">
+      <ul >
+        <li><a href="/">Latest Posts</a></li>
+        <li><a href="talks">Talks</a></li>
+        <li><a href="speakers">Speakers</a></li>
+        <li><a href="contact">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section data-role="content" class="indexPos" id="sessions-list-content">
+
+  </section>
+
+  <footer data-role="footer" data-position="fixed" data-theme="b">
+    <nav data-role="navbar">
+      <ul>
+        <li>
+          <a data-icon="home" href="#home_page" data-role="tab">Home</a>
+        </li>
+        <li>
+          <a class="ui-btn-active ui-state-persist" data-role="tab" data-icon="bars">Sessions</a>
+        </li>
+        <li>
+          <a href="#map" data-role="tab" data-icon="location">Map</a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+
+</article>
+
+<article id="map" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
+  <header id="maptitle" class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
+    <header class="logo">
+      <img src="logo.jpg" alt="The conference home page logo"/>
+    </header>
+
+    <div>
+      <h1>The Future of the Web Conference</h1>
+    </div>
+
+    <nav data-role="navbar">
+      <ul >
+        <li><a href="/">Latest Posts</a></li>
+        <li><a href="talks">Talks</a></li>
+        <li><a href="speakers">Speakers</a></li>
+        <li><a href="contact">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="mapPos" role="application" data-role="content">
+    <!-- Content is dynamically added -->
+  </section>
+
+  <footer id="mapfooter" data-role="footer" data-position="fixed" data-theme="b">
+    <nav data-role="navbar">
+      <ul>
+        <li>
+          <a data-icon="home" href="#home_page" data-role="tab">Home</a>
+        </li>
+        <li>
+          <a data-icon="bars" href="#sessions" data-role="tab">Sessions</a>
+        </li>
+        <li>
+          <a class="ui-btn-active ui-state-persist" data-icon="location" data-role="tab">Map</a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+
+</article>
+
+</body>
+</html>
