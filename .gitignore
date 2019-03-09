@@ -279,7 +279,7 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
-### Cordova ###
+### § ###
 # gitignore template for the Cordova framework
 # website: https://cordova.apache.org/
 #
@@ -287,6 +287,7 @@ fabric.properties
 
 # App platform binaries and built files
 /platforms
+/plugins
 
 # Optional to ignore plugin Git clones
 #/plugins
