@@ -78,6 +78,36 @@ Conference.controller = (function ($, dataContext, document) {
       ul.listview();
     }
   };
+  var renderSessionsList = function (sessionsList) {
+    var view = $(sessionsListSelector);
+    view.empty();
+
+    console.log(`Sessions length is ${sessionsList.length}`);
+    if (sessionsList.length === 0) {
+      $(noSessionsCachedMsg).appendTo(view);
+    } else {
+      let liArray = [];
+      let listItem = null;
+      let sessionsCount = sessionsList.length;
+      let session = null;
+
+      let filterForm = $(`<form class="ui-filterable">`);
+      let inputField = $(`<input id="myFilter" data-type="search" placeholder="Filter your entries">`);
+      inputField.appendTo(filterForm);
+      filterForm.appendTo(view);
+
+      let ul = $(`<ul id="session-list" data-role="listview" data-filter="true" data-input="#myFilter"></ul>`)
+        .appendTo(view);
+      for (let i = 0; i < sessionsCount; i += 1) {
+        session = sessionsList[i];
+        listItem = `<li><span class="session-list-item"><h3>${session.name}</h3><div><h6>${session.notes}</h6><h6>${session.date_of_entry}</h6></div></span></li>`;
+        liArray.push(listItem);
+      }
+      let listItems = liArray.join('');
+      $(listItems).appendTo(ul);
+      ul.listview();
+    }
+  };
 
   var noDataDisplay = function (event, data) {
     var view = $(sessionsListSelector);
