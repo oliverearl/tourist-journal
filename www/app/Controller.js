@@ -52,57 +52,29 @@ Conference.controller = (function ($, dataContext, document) {
     view.empty();
 
     if (sessionsList.length === 0) {
-
       $(noSessionsCachedMsg).appendTo(view);
     } else {
+      let listArray = [];
+      let listItem;
 
-      var liArray = [],
-        listItem,
-        sessionsCount = sessionsList.length,
-        session,
-        i;
-
-      // Loop through all sessionList data and build up the session list item
-      // HTML data dynamically using jQuery and jQuery Mobile commands
-      // such as appendTo and listView
-
-      //<form class="ui-filterable">
-      //<input id="myFilter" data-type="search" placeholder="Search for sessions..">
-      //</form>
-      var filterForm = $("<form class=\"ui-filterable\">");
-      var inputField = $("<input id=\"myFilter\" data-type=\"search\" placeholder=\"Search for sessions...\">");
+      /*
+      Build up a list
+       */
+      let filterForm = $(`<form class="ui-filterable">`);
+      let inputField = $(`<input id="myFilter" data-type="search" placeholder="Filter entries">`);
       inputField.appendTo(filterForm);
       filterForm.appendTo(view);
 
-      var ul = $("<ul id=\"session-list\" data-role=\"listview\" data-filter=\"true\" data-input=\"#myFilter\"></ul>").appendTo(view);
+      let ul = $(`<ul id="event-list" data-role="listview" data-filter="true" data-input="#myFilter"></ul>`);
+      let event = null;
+      for (let i = 0; i < sessionsList.length; i += 1) {
+        event = sessionsList[i];
 
-      for (i = 0; i < sessionsCount; i += 1) {
-
-        listItem = "<li>";
-        session = sessionsList[i];
-
-        if (session.type === TECHNICAL_SESSION) {
-          listItem = listItem + "<a data-url=\"index.html#events?sessionId=" + session._id + "\" href=\"index.html#events?sessionId=" + session._id + "\">";
-        } else {
-          listItem = listItem + "<a href=\"\">";
-        }
-        liArray.push(listItem
-          + "<span class='session-list-item'>"
-          + "<h3>" + session.title + "</h3>"
-          + "<div>"
-          + "<h6>" + session.type + "</h6>"
-          + "<h6>" + session.starttime + " - " + session.endtime + "</h6>"
-          + "</div>"
-          + "</span>"
-          + "</a>"
-          + "</li>");
-
+        listItem = `<li><span class="session-list item entry-list-item"><h3>entry.name</h3><div><h6>entry.description</h6></div><div><h6>entry.date_of_entry</h6></div></span></li>`;
+        listArray.push(listItem);
       }
-
-      var listItems = liArray.join("");
+      let listItems = listArray.join('');
       $(listItems).appendTo(ul);
-
-
       ul.listview();
     }
   };

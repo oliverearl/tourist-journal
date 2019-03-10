@@ -45,6 +45,7 @@ TouristApp.controller = (function ($, database, document) {
   };
 
   var renderEventsList = function(entriesList) {
+    console.log(entriesList);
     let printingArea = $(PRINTING_AREA);
     printingArea.empty();
 

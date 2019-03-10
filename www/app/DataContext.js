@@ -1,249 +1,91 @@
 ﻿var Conference = Conference || {};
 
 Conference.dataContext = (function ($) {
-    "use strict";
+  "use strict";
 
-    var db = null;
-    var processorFunc = null;
-    var id;
-    var DATABASE_NAME = 'conference_db';
-    // Use OLD_DATABASE_VERSION when upgrading databases. It indicates
-    // the version we can upgrade from. Anything older and we tell the user
-    // there's a problem
-    var OLD_DATABASE_VERSION = "0";
-    // The current database version supported by this script
-    var DATABASE_VERSION = "1.0";
+  var db = null;
+  var processorFunc = null;
+  var DATABASE_NAME = 'brandnewdb';
+  var DATABASE_DISPLAY_NAME = 'Tourist WebSQL';
+  var OLD_DATABASE_VERSION = "0";
+  var DATABASE_VERSION = "1.0";
+  var DATABASE_SIZE = 200000;
 
-    var populateDB = function (tx) {
+  var populateDB = function(tx) {
+    console.log('Populating database.');
+    tx.executeSql('CREATE TABLE entries (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, notes TEXT, photo BLOB, date_of_entry DATETIME NOT NULL, location DECIMAL NOT NULL);', [], createSuccess, errorDB);
+    //tx.executeSql('CREATE UNIQUE INDEX entries_id_uindex ON entries (id);', [], databasePopulateSuccess, databaseError);
+    tx.executeSql("INSERT INTO \"entries\" (\"id\",\"name\", \"notes\", \"photo\", \"date_of_entry\", \"location\") VALUES (null, 'This is a sample entry.', 'This is a sample description.', 'data:image/jpeg;base64,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\n', '2019-01-01 14:56:54.919', '(52.415303,-4.082920)')", [], insertSuccess, errorDB);
+  };
 
-        // There is much more here than we need for the assignment. We only need sessions and days
-        tx.executeSql('CREATE TABLE days (_id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, date TEXT)', [], createSuccess, errorDB);
-        tx.executeSql('CREATE TABLE talks (_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, speaker TEXT, image TEXT, description TEXT, notes TEXT, eventid INTEGER NOT NULL)', [], createSuccess, errorDB);
-        tx.executeSql('CREATE TABLE venues (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, latitude TEXT, longitude TEXT)', [], createSuccess, errorDB);
-        tx.executeSql('CREATE TABLE sessions (_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, starttime TEXT, endtime TEXT, type TEXT, dayid INTEGER NOT NULL)', [], createSuccess, errorDB);
-        tx.executeSql('CREATE TABLE events (_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, venueid INTEGER NOT NULL, sessionid INTEGER NOT NULL)', [], createSuccess, errorDB);
+  var createSuccess = function (tx, results) {
+    console.log("Created table");
+  };
 
-        tx.executeSql('insert into days (_id, day, date) values (1,	\'Wednesday\', \'8th Sept\')', [], insertSuccess, errorDB);
-        tx.executeSql('insert into days (_id, day, date) values (2,	\'Thursday\',	\'9th Sept\' )', [], insertSuccess, errorDB);
-        tx.executeSql('insert into days (_id, day, date) values (3,	\'Friday\',	\'10th Sept\' )', [], insertSuccess, errorDB);
+  var insertSuccess = function (tx, results) {
+    console.log("Insert ID = " + results.insertId);
+  }
 
-        tx.executeSql('insert into sessions (_id, title, startTime, endtime, type, dayId) values (1,  \'OPENING CEREMONY\',     \'09:00\', \'09:30\', \'Social\',        1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (2,  \'Keynote Address\',      \'09:30\', \'10:30\',        \'Keynote\',       1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (3,  \'COFFEE BREAK\', \'10:30\',        \'11:00\',        \'Social\',        1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (4,  \'TECHNICAL SESSIONS\',   \'11:00\',        \'12:30\',        \'Technical\',     1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (5,  \'LUNCH\',        \'12:30\',        \'14:00\',        \'Social\',        1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (6,  \'TECHNICAL SESSIONS\',   \'14:00\',        \'15:30\',        \'Technical\',     1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (7,  \'TEA BREAK\',    \'15:30\',        \'16:00\',        \'Social\',        1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (8,  \'TECHNICAL SESSIONS\',   \'16:00\',        \'17:30\',        \'Technical\',     1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (9,  \'Computers and Thought Award Lecture\',  \'18:00\',        \'19:00\',        \'Technical\',     1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (10, \'Invited Speaker\',      \'09:00\', \'10:30\',        \'Keynote\',       2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (11, \'COFFEE BREAK\', \'10:30\',        \'11:00\',        \'Social\',        2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (12, \'TECHNICAL SESSIONS\',   \'11:00\',        \'12:30\',        \'Technical\',     2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (13, \'LUNCH\',        \'12:30\',        \'14:00\',        \'Social\',        2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (14, \'TECHNICAL SESSIONS\',   \'14:00\',        \'15:30\',        \'Technical\',     2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (15, \'TEA BREAK\',    \'15:30\',        \'16:00\',        \'Social\',        2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (16, \'TECHNICAL SESSIONS\',   \'16:00\',        \'17:30\',        \'Technical\',     2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (17, \'CONFERENCE BANQUET\',   \'19:00\',        \'22:00\',        \'Social\',        2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (18, \'Invited Talk\', \'09:00\', \'10:30\',        \'Keynote\',       3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (19, \'COFFEE BREAK\', \'10:30\',        \'11:00\',        \'Social\',        3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (20, \'TECHNICAL SESSIONS\',   \'11:00\',        \'12:30\',        \'Technical\',     3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	sessions (_id, title, startTime, endtime, type, dayId) values (21, \'CLOSING CEREMONY\',     \'12:30\',        \'13:00\',        \'Social\',        3)', [], insertSuccess, errorDB);
+  var successPopulate = function () {
 
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (1,    \'Computer Mediated Transactions\',       1,      2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (2,    \'Cognitive and Philosophical Foundations\',      2,      4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (3,    \'Performance and Behavior Modeling in Games\',   3,      4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (4,    \'Diagnosis and Testing\',        4,      4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (5,    \'Social Choice: Manipulation\',  2,      6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (6,    \'Search in Games\',      3,      6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (7,    \'Plan Recognition\',     4,      6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (8,    \'Online Games\', 2,      8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (9,    \'Model-Based Diagnosis and Applications\',       3,      8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (10,   \'Word Sense Disambiguation\',    4,      8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (11,   \'STAIR: The STanford Artificial Intelligence Robot Project\',    1,      9)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (12,   \'Embodied Language Games with Autonomous Robots\',       1,      10)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (13,   \'Robotics: Multirobot Planning\',        2,      12)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (14,   \'Search And Learning\',  3,      12)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (15,   \'Multiagent Resource Allocation\',       4,      12)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (16,   \'HTN Planning\', 2,      14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (17,   \'Coalitional Games\',    3,      14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (18,   \'Unsupervised Learning\',        4,      14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (19,   \'Heuristic Search\',     2,      16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (20,   \'Logic Programming\',    3,      16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (21,   \'Mechanism Design\',     4,      16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (22,   \'Intelligent Tutoring Systems: New Challenges and Directions\',  1,      18)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (23,   \'Social Choice: Voting\',        2,      20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (24,   \'Optimal Planning\',     3,      20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	events (_id, title, venueId, sessionId) values (25,   \'Metric Learning\',      4,      20)', [], insertSuccess, errorDB);
+  }
 
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (1,	\'Computer Mediated Transactions\',	\'Hal R. Varian\',	\'HalVarian\',	\'HalVarian\', 1)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (2,	\'Is It Enough to Get the Behavior Right? \',	\'Hector Levesque\',	\' \',	\' \', 	2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (3,	\'A Logic for reasoning about Counterfactual Emotions \',	\'Emiliano Lorini\',	\' \',	\' \', 	2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (4,	\'Towards Context Aware Emotional Intelligence in Machines\',	\'Michal Ptaszynski\',	\' \',	\' \', 	2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (5,	\'Modeling Agents through Bounded Rationality Theories \',	\'Avi Rosenfeld\',	\' \',	\' \', 	2)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (6,	\'Analysis of a Winning Computational Billiards Player\',	\'Chris Archibald\',	\' \',	\' \', 	3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (7,	\'Acquiring Agent-Based Models of Conflict from Event Data \',	\'Glenn Taylor\',	\' \',	\' \', 	3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (8,	\'Using Reasoning Patterns to Help Humans Solve Complex Games\',	\'Dimitrios Antos\',	\' \',	\' \', 	3)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (9,	\'A New Bayesian Approach to Multiple Intermittent Fault Diagnosis\',	\'Rui Abreu\',	\'  \',	\' \', 	4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (10,	\'Diagnosing Multiple Persistent and Intermittent Faults\',	\'Johan de Kleer\',	\' \',	\' \', 	4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (11,	\'FRACTAL: Efficient Fault Isolation Using Active Testing \',	\'Alexander Feldman\',	\' \',	\' \', 	4)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (12,	\'Complexity of Unweighted Coalitional Manipulation under Some Common Voting Rules\',	\'Lirong Xia\',	\' \',	\' \', 	5)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (13,	\'How Hard Is It to Control Sequential Elections via the Agenda?\',	\'Vincent Conitzer\',	\' \',	\' \', 	5)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (14,	\'Multimode Control Attacks on Elections\',	\'Piotr Faliszewski\',	\' \',	\' \', 	5)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (15,	\'Where Are the Really Hard Manipulation Problems? The Phase Transition in Manipulating the Veto Rule\',	\'Toby Walsh\',	\' \',	\' \', 	5)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (16,	\'Evaluating Strategies for Running from the Cops\',	\'Carsten Moldenhauer\',	\' \',	\' \', 	6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (17,	\'Improving State Evaluation, Inference, and Search in Trick-Based Card Games\',	\'Michael Buro\',	\' \',	\' \', 	6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (18,	\'Solving 8x8 Hex\',	\'Philip Henderson\',	\' \',	\' \', 	6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (19,	\'Probabilistic State Translation in Extensive Games with Large Action Sets\',	\'David Schnizlein\',	\' \',	\' \', 	6)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (20,	\'Abnormal Activity Recognition Based on HDP-HMM\',	\'Derek Hao Hu\',	\' \',	\' \', 	7)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (21,	\'Activity Recognition with Intended Actions\',	\'Alfredo Gabaldon\',	\' \',	\' \', 	7)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (22,	\'Plan Recognition as Planning\',	\'Miguel Ramirez\',	\' \',	\' \', 	7)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (23,	\'Delaying Commitment in Plan Recognition Using Combinatory Categorial Grammars\',	\'Chris Geib\',	\' \',	\' \', 	7)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (24,	\'Wikispeedia: An Online Game for Inferring Semantic Distances between Concepts\',	\'Robert West\',	\' \',	\' \', 	8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (25,	\'On the Tip of My Thought: Playing the Guillotine Game\',	\'Giovanni Semeraro\',	\' \',	\' \', 	8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (26,	\'Streamlining Attacks on CAPTCHAs with a Computer Game\',	\'Jeff Yan\',	\' \',	\' \', 	8)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (27,	\'Evaluating Abductive Hypotheses using an EM Algorithm on BDDs\',	\'Katsumi Inoue\',	\' \',	\' \', 	9)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (28,	\'Solving Strong-Fault Diagnostic Models by Model Relaxation \',	\'Alex Feldman\',	\' \',	\' \', 	9)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (29,	\'Plausible Repairs for Inconsistent Requirements\',	\'Alex Felfernig\',	\' \',	\' \', 	9)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (30,	\'Knowledge-Based WSD and Specific Domains\',	\'Eneko Agirre\',	\' \',	\' \', 	10)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (31,	\'Word Sense Disambiguation for All Words without Hard Labor\',	\'Zhi Zhong\',	\' \',	\' \', 	10)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (32,	\'Web-Scale N-gram Models for Lexical Disambiguation\',	\'Shane Bergsma\',	\' \',	\' \', 	10)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (33,	\'STAIR: The STanford Artificial Intelligence Robot Project\',	\'Andrew Y. Ng \',	\'AndrewNg\',	\'AndrewNg\', 11)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (34,	\'Embodied Language Games with Autonomous Robots\',	\'Luc Steels \',	\'LucSteels\',	\'LucSteels\', 12)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (35,	\'Adversarial Uncertainty in Multi-Robot Patrol\',	\'Noa Agmon\',	\' \',	\' \', 	13)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (36,	\'Algorithms and Complexity Results for Pursuit-Evasion Problems\',	\'Richard Borie\',	\' \',	\' \', 	13)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (37,	\'Tractable Multi-Agent Path Planning on Grid Maps\',	\'Ko-Hsin Cindy Wang\',	\' \',	\' \', 	13)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into talks (_id, title, speaker, image, description, eventId) values (38,	\'A Distributed Control Loop for Autonomous Recovery in a Multi-Agent Plan\',	\'Roberto Micalizio\',	\' \',	\' \', 	13)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (39,	\'Efficient Dominant Point Algorithms for the MLCS Problem\',	\'Qingguo Wang\',	\' \',	\' \', 	14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (40,	\'Search Strategies for an Anytime Usage of the Branch and Prune Algorithm\',	\'Raphael Chenouard\',	\' \',	\' \', 	14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (41,	\'Goal-Driven Learning in the GILA Integrated Intelligence Architecture\',	\'Jainarayan Radhakrishnan\',	\' \',	\' \', 	14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (42,	\'Angluin-Style Learning of NFA\',	\'Benedikt Bollig\',	\' \',	\' \', 	14)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (43,	\'Expressive Power-Based Resource Allocation for Data Centers\',	\'Benjamin Lubin\',	\' \',	\' \', 	15)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (44,	\'Online Stochastic Optimization in the Large: Application to Kidney Exchange\',	\'Pranjal Awasthi\',	\' \',	\' \', 	15)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (45,	\'K-Swaps: Cooperative Negotiation for Solving Task-Allocation Problems\',	\'Xiaoming Zheng\',	\' \',	\' \', 	15)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (46,	\'A Multi-Agent Learning Approach to Online Distributed Resource Allocation\',	\'Chongjie Zhang\',	\' \',	\' \', 	15)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (47,	\'Learning Probabilistic Hierarchical Task Networks to Capture User Preferences\',	\'Nan Li\',	\' \',	\' \', 	16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (48,	\'Translating HTNs to PDDL\',	\'Ronald Alford\',	\' \',	\' \', 	16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (49,	\'HTN Planning with Preferences\',	\'Shirin Sohrabi\',	\' \',	\' \', 	16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (50,	\'Learning HTN Method Preconditions and Action Models from Partial Observations\',	\'Hankz Hankui Zhuo\',	\' \',	\' \', 	16)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (51,	\'On the Complexity of Compact Coalitional Games\',	\'Gianluigi Greco\',	\' \',	\' \', 	17)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (52,	\'Coalitional Affinity Games and the Stability Gap\',	\'Simina Branzei\',	\' \',	\' \', 	17)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (53,	\'Simple Coalitional Games with Beliefs\',	\'Georgios Chalkiadakis\',	\' \',	\' \', 	17)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (54,	\'Coalition Structure Generation in Multi-Agent Systems with Positive and Negative Externalities\',	\'Talal Rahwan\',	\' \',	\' \', 	17)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (55,	\'On the Equivalence between Canonical Correlation Analysis and Orthonormalized Partial Least Squares\',	\'Liang Sun\',	\' \',	\' \', 	18)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (56,	\'Relation Regularized Matrix Factorization \',	\'Wu-Jun Li\',	\' \',	\' \', 	18)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (57,	\'Spectral Embedded Clustering\',	\'Feiping Nie\',	\' \',	\' \', 	18)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (58,	\'Knowledge Driven Dimension Reduction for Clustering\',	\'Ian Davidson\',	\' \',	\' \', 	18)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (59,	\'Canadian Traveler Problem With Remote Sensing\',	\'Zahy Bnaya\',	\' \',	\' \', 	19)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (60,	\'Minimum Proof Graphs and Fastest-Cut-First Search Heuristic\',	\'Timothy Furtak\',	\' \',	\' \', 	19)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (61,	\'Memory-Based Heuristics for Explicit State Spaces\',	\'Nathan Sturtevant\',	\' \',	\' \', 	19)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (62,	\'Incremental Phi*: Incremental Any-Angle Path Planning on Grids\',	\'Alex Nash\',	\' \',	\' \', 	19)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (63,	\'Local Query Mining in a Probabilistic Prolog\',	\'Angelika Kimmig\',	\' \',	\' \', 	20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (64,	\'CTPPL: A Continuous Time Probabilistic Programming Language\',	\'Avi Pfeffer\',	\' \',	\' \', 	20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (65,	\'A Syntax-based Framework for Merging Imprecise Probabilistic Logic Programs\',	\'Anbu Yue\',	\' \',	\' \', 	20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (66,	\'Next Steps in Propositional Horn Contraction\',	\'Richard Booth\',	\' \',	\' \', 	20)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (67,	\'How Pervasive Is the Myerson-Satterthwaite Impossibility?\',	\'Abraham Othman\',	\' \',	\' \', 	21)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (68,	\'A General Approach to Environment Design with One Agent\',	\'Haoqi Zhang\',	\' \',	\' \', 	21)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (69,	\'Eliciting Honest Reputation Feedback in a Markov Setting\',	\'Jens Witkowski\',	\' \',	\' \', 	21)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (70,	\'Strategyproof Classification with Shared Inputs\',	\'Reshef Meir\',	\' \',	\' \', 	21)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (71,	\'Intelligent Tutoring Systems: New Challenges and Directions\',	\'Cristina Conati \',	\'ChristinaConati\',	\'ChristinaConati\', 22)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (72,	\'Finite Local Consistency Characterizes Generalized Scoring Rules\',	\'Lirong Xia\',	\' \',	\' \', 	23)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (73,	\'Nonmanipulable Selections from a Tournament\',	\'Alon Altman\',	\' \',	\' \', 	23)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (74,	\'A Dichotomy Theorem on the Existence of Efficient or Neutral Sequential Voting Correspondences\',	\'Lirong Xia\',	\' \',	\' \', 	23)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (75,	\'A Multivariate Complexity Analysis of Determining Possible Winners Given Incomplete Votes\',	\'Nadja Betzler\',	\' \',	\' \', 	23)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (76,	\'Optimal Symbolic Planning with Action Costs and Preferences\',	\'Stefan Edelkamp\',	\' \',	\' \', 	24)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (77,	\'Planning with Partial Preference Models\',	\'Tuan A. Nguyen\',	\' \',	\' \', 	24)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (78,	\'Completeness and Optimality Preserving Reduction for Planning\',	\'Yixin Chen\',	\' \',	\' \', 	24)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (79,	\'Cost-Optimal Planning with Landmarks\',	\'Erez Karpas\',	\' \',	\' \', 	24)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (80,	\'Robust Distance Metric Learning with Auxiliary Knowledge\',	\'Zheng-Jun Zha\',	\' \',	\' \', 	25)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (81,	\'Non-Metric Label Propagation\',	\'Yin Zhang\',	\' \',	\' \', 	25)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (82,	\'Spectral Kernel Learning for Semi-Supervised Classification\',	\'Wei Liu\',	\' \',	\' \', 	25)', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	talks (_id, title, speaker, image, description, eventId) values (83,	\'Semi-Supervised Metric Learning Using Pairwise Constraints\',	\'Mahdieh Baghshah\',	\' \',	\' \', 	25)', [], insertSuccess, errorDB);
+  var errorDB = function (err) {
+    console.log("Error processing SQL: " + err.message);
+  };
 
-        tx.executeSql('insert into	venues (_id, name, latitude, longitude) values (1,	\'Computer Science Reception\',	\'52.416258\', \'-4.065607\')', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	venues (_id, name, latitude, longitude) values (2,	\'Arts Centre\',	\'52.415574\', \'-4.063021\')', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	venues (_id, name, latitude, longitude) values (3,	\'Geography Tower\', 	\'52.416706\', \'-4.066612\')', [], insertSuccess, errorDB);
-        tx.executeSql('insert into	venues (_id, name, latitude, longitude) values (4,	\'Hugh Owen\',	\'52.415875\', \'-4.063686\')', [], insertSuccess, errorDB);
+  var initialise_database = function() {
+    if (typeof window.openDatabase === 'undefined') {
+      return false;
     }
-
-    var createSuccess = function (tx, results) {
-        console.log("Created table");
+    db = window.openDatabase(DATABASE_NAME, '', DATABASE_DISPLAY_NAME, DATABASE_SIZE);
+    if (db.version.length === 0) {
+      db.changeVersion('', DATABASE_VERSION);
+      db.transaction(populateDB, errorDB, successPopulate);
+    } else if (db.version === OLD_DATABASE_VERSION) {
+      // Database upgrade
+      alert('Database upgrade needed');
+    } else if (db.version !== DATABASE_VERSION) {
+      // Database failure
+      alert('Database incompatible');
+      return false;
     }
+    return true;
+  };
 
-    var insertSuccess = function (tx, results) {
-        console.log("Insert ID = " + results.insertId);
+  var init = function () {
+    return initialise_database();
+  };
+
+  var queryListSuccess = function (tx, results) {
+    var list = [];
+    var len = results.rows.length;
+    for (var i = 0; i < len; i++) {
+      list[i] = results.rows.item(i);
     }
+    // After asynchronously obtaining the data we call the processor provided
+    // by the caller, e.g. it could be a UI renderer
+    processorFunc(list);
+  }
 
-    var successPopulate = function () {
 
+  var querySessions = function (tx) {
+    // For the moment we just deal with the first day
+    tx.executeSql("SELECT * FROM entries ORDER BY entries.date_of_entry ASC",
+      [], queryListSuccess, errorDB);
+  };
+
+  var processSessionsList = function (processor) {
+    processorFunc = processor;
+    if (db) {
+      db.transaction(querySessions, errorDB);
     }
+  };
 
-    var errorDB = function (err) {
-        console.log("Error processing SQL: " + err.code);
-    }
+  var pub = {
+    init:init,
+    processSessionsList:processSessionsList
+  };
 
-    var initialise_database = function () {
-        // We open any existing database with this name and from the same origin.
-        // Check first that openDatabase is supported.
-        // Note that if not supported natively and we are running on a mobile
-        // then PhoneGap will provide the support.
-        if (typeof window.openDatabase === "undefined") {
-            return false;
-        }
-        db = window.openDatabase(DATABASE_NAME, "", "Conference App", 200000);
-
-        // If the version is empty then we know it's the first create so set the version
-        // and populate
-        if (db.version.length == 0) {
-            db.changeVersion("", DATABASE_VERSION);
-            db.transaction(populateDB, errorDB, successPopulate);
-        }
-        else if (db.version == OLD_DATABASE_VERSION) {
-            // We can upgrade but in this example we don't!
-            alert("upgrading database");
-        }
-        else if (db.version != DATABASE_VERSION) {
-            // Trouble. They have a version of the database we
-            // cannot upgrade from
-            alert("incompatible database version");
-            return false;
-        }
-
-        return true;
-    }
-
-    var init = function () {
-        return initialise_database();
-    };
-
-    var queryListSuccess = function (tx, results) {
-        var list = [];
-        var len = results.rows.length;
-        for (var i = 0; i < len; i++) {
-            list[i] = results.rows.item(i);
-        }
-        // After asynchronously obtaining the data we call the processor provided
-        // by the caller, e.g. it could be a UI renderer
-        processorFunc(list);
-    }
-
-
-    var querySessions = function (tx) {
-        // For the moment we just deal with the first day
-        tx.executeSql("SELECT * FROM sessions WHERE sessions.dayid = '1' ORDER BY sessions.starttime ASC",
-            [], queryListSuccess, errorDB);
-    }
-
-    var processSessionsList = function (processor) {
-        processorFunc = processor;
-        if (db) {
-            db.transaction(querySessions, errorDB);
-        }
-    };
-
-    var pub = {
-        init:init,
-        processSessionsList:processSessionsList
-    };
-
-    return pub;
+  return pub;
 }(jQuery));
