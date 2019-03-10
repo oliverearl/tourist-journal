@@ -36,8 +36,8 @@ Conference.controller = (function ($, dataContext, document) {
         dataContext.processSessionsList(renderSessionsList);
         break;
       case MAP_PAGE:
-        if (!mapDisplayed || (currentMapWidth != get_map_width() ||
-          currentMapHeight != get_map_height())) {
+        if (!mapDisplayed || (currentMapWidth !== get_map_width() ||
+          currentMapHeight !== get_map_height())) {
           deal_with_geolocation();
         }
         break;
@@ -54,8 +54,8 @@ Conference.controller = (function ($, dataContext, document) {
     } else {
       let liArray = [];
       let listItem = null;
-      let sessionsCount = sessionsList.length;
       let session = null;
+      let sessionsCount = sessionsList.length;
 
       let filterForm = $(`<form class="ui-filterable">`);
       let inputField = $(`<input id="myFilter" data-type="search" placeholder="Filter your entries">`);

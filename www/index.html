@@ -132,6 +132,38 @@
         <h2>Add Entry</h2>
       </header>
       <!-- TODO: Add Entry Form -->
+      <form class="ui-content">
+        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+          <label for="entry-name">Name of Entry:</label>
+          <input type="text" name="entry-name" id="entry-name"
+                 class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
+                 placeholder="Go somewhere nice?" minlength="5" maxlength="100" required>
+        </div>
+        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+          <label for="entry-notes">Description:</label>
+          <textarea name="entry-notes" id="entry-notes"
+                    class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
+                    placeholder="How was your visit?" minlength="5" maxlength="600" required></textarea>
+        </div>
+        <div class="ui-checkbox ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+          <label for="entry-geolocation">Use Geolocation?</label>
+          <input type="checkbox" name="entry-geolocation" id="entry-geolocation"
+                 class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset"
+                 checked>
+        </div>
+        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+          <label for="entry-latitude"><del>Latitude:</del></label>
+          <input type="number" name="entry-latitude" id="entry-latitude"
+                 class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
+                 placeholder="Disabled" minlength="1" maxlength="20" disabled>
+        </div>
+        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+          <label for="entry-longitude"><del>Longitude:</del></label>
+          <input type="number" name="entry-longitude" id="entry-longitude"
+                 class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
+                 placeholder="Disabled" minlength="1" maxlength="20" disabled>
+        </div>
+      </form>
     </section>
   </section>
 
