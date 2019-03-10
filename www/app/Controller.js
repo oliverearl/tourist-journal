@@ -3,30 +3,29 @@ var Conference = Conference || {};
 Conference.controller = (function ($, dataContext, document) {
   "use strict";
 
-  var position = null;
-  var mapDisplayed = false;
-  var currentMapWidth = 0;
-  var currentMapHeight = 0;
-  var sessionsListSelector = "#entries-list-content";
-  var noSessionsCachedMsg = "<div>Your sessions list is empty.</div>";
-  var databaseNotInitialisedMsg = "<div>Your browser does not support local databases.</div>";
+  let position = null;
+  let mapDisplayed = false;
+  let currentMapWidth = 0;
+  let currentMapHeight = 0;
 
-  var TECHNICAL_SESSION = "Technical",
-    SESSIONS_LIST_PAGE_ID = "entries",
-    MAP_PAGE = "map";
+  const sessionsListSelector = "#entries-list-content";
+  const noSessionsCachedMsg = "<div>Your sessions list is empty.</div>";
+  const databaseNotInitialisedMsg = "<div>Your browser does not support local databases.</div>";
+  const SESSIONS_LIST_PAGE_ID = "entries";
+  const MAP_PAGE = "map";
 
   // This changes the behaviour of the anchor <a> link
   // so that when we click an anchor link we change page without
   // updating the browser's history stack (changeHash: false).
   // We also don't want the usual page transition effect but
   // rather to have no transition (i.e. tabbed behaviour)
-  var initialisePage = function (event) {
+  const initialisePage = function(event) {
     change_page_back_history();
   };
 
-  var onPageChange = function (event, data) {
+  const onPageChange = function(event, data) {
     // Find the id of the page
-    var toPageId = data.toPage.attr("id");
+    let toPageId = data.toPage.attr("id");
 
     // If we're about to display the map tab (page) then
     // if not already displayed then display, else if
@@ -45,11 +44,11 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
-  var renderSessionsList = function (sessionsList) {
-    var view = $(sessionsListSelector);
+  const renderSessionsList = function(sessionsList) {
+    let view = $(sessionsListSelector);
     view.empty();
 
-    console.log(`Sessions length is ${sessionsList.length}`);
+    //console.log(`Sessions length is ${sessionsList.length}`);
     if (sessionsList.length === 0) {
       $(noSessionsCachedMsg).appendTo(view);
     } else {
@@ -70,7 +69,7 @@ Conference.controller = (function ($, dataContext, document) {
         if (session.photo !== null) {
           session.photo = `<img src="${session.photo}" alt="${session.name}" height="100" width="100">`;
         } else {
-          session.photo = 'No photo provided';
+          session.photo = `<img src="res/logo.png" alt="No Photo Provided" height="100" width="100">`;
         }
         listItem = `
 <li>
@@ -90,16 +89,16 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
-  var noDataDisplay = function (event, data) {
-    var view = $(sessionsListSelector);
+  const noDataDisplay = function(event, data) {
+    let view = $(sessionsListSelector);
     view.empty();
     $(databaseNotInitialisedMsg).appendTo(view);
-  }
+  };
 
-  var change_page_back_history = function () {
-    $('a[data-role="tab"]').each(function () {
-      var anchor = $(this);
-      anchor.bind("click", function () {
+  const change_page_back_history = function() {
+    $('a[data-role="tab"]').each(function() {
+      const anchor = $(this);
+      anchor.bind("click", function() {
         $.mobile.changePage(anchor.attr("href"), { // Go to the URL
           transition: "none",
           changeHash: false
@@ -109,7 +108,7 @@ Conference.controller = (function ($, dataContext, document) {
     });
   };
 
-  var deal_with_geolocation = function () {
+  const deal_with_geolocation = function() {
     var phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
       // Running on a mobile. Will have to add to this list for other mobiles.
@@ -129,7 +128,7 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
-  var initiate_geolocation = function () {
+  const initiate_geolocation = function() {
 
     // Do we have built-in support for geolocation (either native browser or phonegap)?
     if (navigator.geolocation) {
@@ -141,7 +140,7 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
-  var handle_errors = function (error) {
+  const handle_errors = function(error) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
         alert("user did not share geolocation data");
@@ -161,7 +160,7 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
-  var normalize_yql_response = function (response) {
+  const normalize_yql_response = function(response) {
     if (response.error) {
       var error = { code: 0 };
       handle_errors(error);
@@ -183,21 +182,21 @@ Conference.controller = (function ($, dataContext, document) {
     handle_geolocation_query(position);
   };
 
-  var get_map_height = function () {
+  const get_map_height = function() {
     return $(window).height() - ($('#maptitle').height() + $('#mapfooter').height());
-  }
+  };
 
-  var get_map_width = function () {
+  const get_map_width = function() {
     return $(window).width();
-  }
+  };
 
-  var handle_geolocation_query = function (pos) {
+  const handle_geolocation_query = function(pos) {
     position = pos;
 
-    var the_height = get_map_height();
-    var the_width = get_map_width();
+    let the_height = get_map_height();
+    let the_width = get_map_width();
 
-    var image_url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + position.coords.latitude + ',' +
+    let image_url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + position.coords.latitude + ',' +
       position.coords.longitude + '&zoom=14&size=' +
       the_width + 'x' + the_height + '&markers=color:blue|label:S|' +
       position.coords.latitude + ',' + position.coords.longitude +
@@ -214,11 +213,11 @@ Conference.controller = (function ($, dataContext, document) {
     mapDisplayed = true;
   };
 
-  var init = function () {
+  const init = function() {
     // The pagechange event is fired every time we switch pages or display a page
     // for the first time.
-    var d = $(document);
-    var databaseInitialised = dataContext.init();
+    let d = $(document);
+    let databaseInitialised = dataContext.init();
     if (!databaseInitialised) {
       d.on('pagechange', $(document), noDataDisplay);
     }
@@ -235,7 +234,7 @@ Conference.controller = (function ($, dataContext, document) {
 
   // Provides an object wrapper for the "public" functions that we return to external code so that they
   // know which functions they can call. In this case just init.
-  var pub = {
+  const pub = {
     init: init
   };
 
