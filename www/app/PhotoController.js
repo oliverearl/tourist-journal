@@ -5,8 +5,7 @@
 /**
  *
  */
-function clearButton()
-{
+const clearButton = function() {
   // Now build a new clear button to allow the user to delete their photo
   // https://stackoverflow.com/questions/1703228/how-can-i-clear-an-html-file-input-with-javascript
   let clearButtonArea = document.getElementById('clear-button-area');
@@ -17,12 +16,12 @@ function clearButton()
   clearButton.setAttribute('onclick', 'clearPhoto()');
   clearButton.innerHTML = 'Remove Image';
   clearButtonArea.appendChild(clearButton);
-}
+};
 
 /**
  *
  */
-function clearPhoto() {
+const clearPhoto = function() {
   let image = document.getElementById('img-preview');
   let imageEntry = document.getElementById('files');
   let clearButton = document.getElementById('clear-button');
@@ -32,13 +31,13 @@ function clearPhoto() {
   image.alt = 'Photo Preview';
   imageEntry.value = null;
   clearButton.remove();
-}
+};
 
 /**
  *
  * @param event
  */
-function handleFileSelect(event) {
+const handleFileSelect = function(event) {
   let files = event.target.files; // FileList object
   // Loop through the FileList and render image files as thumbnails.
   for (let i = 0, f; f = files[i]; i++) {
@@ -60,5 +59,5 @@ function handleFileSelect(event) {
     reader.readAsDataURL(f);
     clearButton();
   }
-}
+};
 document.getElementById('files').addEventListener('change', handleFileSelect, false);

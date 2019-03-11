@@ -60,29 +60,60 @@
         <h2>All About This App</h2>
       </header>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
+        For your convenience, I've laid out the features that are absolutely working, and those that aren't
+        in the following bullet points. Of course, I go into a lot more detail in the write-up, but this should
+        hopefully help the marking process.
       </p>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
+        This is of course is to the best of my knowledge and my testing, and I've tried to be as thorough as I can be.
+        The code is also really well commented, so feel free to look in there if you want to get more context on
+        something. If I've missed anything, it's because of human mistake, sorry!
       </p>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
+        Record List Functionality <strong>100% complete with some slight quirks</strong>
       </p>
+      <ul>
+        <li>Tourists can add notes in a text area.</li>
+        <li>There must be a button to allow the tourist to open the camera and take a picture.</li>
+        <li>The tourist can see the image on the page and can then decide whether to save or cancel the page entry.</li>
+        <li>The tourist should be able to take the picture again if they are not happy with the first attempt.</li>
+        <li>The saved data is then saved in the database.</li>
+      </ul>
+      <p></p>
+      <p>Record List Quirks and Issues</p>
+      <ul>
+        <li>The camera button only allows for image upload on Phonegap/Cordova and on desktop. On mobile browsers, it allows for camera usage as expected.</li>
+        <li>Should geolocation fail, or be refused permission, the app will generate a random (but semantically correct) set of coordinates.</li>
+      </ul>
+      <p></p>
+      <p>List Visits Functionality <strong>100% complete with a minor quirk</strong></p>
+      <ul>
+        <li>This displays a list of visits in date/time order.</li>
+        <li>A filter field should be included.</li>
+        <li>Each row should show the date/time, the short description, and a thumbnail image.</li>
+        <li>Clicking on the short description replaces the page with the full description.</li>
+      </ul>
+      <p></p>
+      <p>List Visits Quirks and Issues</p>
+      <ul>
+        <li>On Phonegap/Cordova and on mobile browsers, the ordering of entries is correct. On desktop, it is back-to-front.</li>
+      </ul>
+      <p></p>
+      <p>Map Functionality <strong>80% complete with a significant bug</strong></p>
+      <p>
+        Paragraph for explanation here. The map loads on Phonegap/Cordova only, and not on mobile browsers or on desktop.
+        The pins do not render properly due to what I suspect is a scope problem where data is not being correctly returned
+        to the calling function, and leaving an array uninitialised. The fallback is to leave a default entry for the person's
+        current location without adding the other locations. The algorithm for generating the pins is present and working, but
+        because data isn't being passed correctly, it doesn't fully work. If the data could be passed properly, <strong>
+        it would be fully working.</strong>
+      </p>
+      <p>Flair</p>
+      <ul>
+        <li>Real Twitter embed included on the homepage, but doesn't always work on Phonegap/Cordova due to Android security settings.</li>
+        <li>The use of the jQuery Mobile Validation library alongside HTML5 validation.</li>
+        <li>Use of HTML5 APIs and ES6 JavaScript where possible.</li>
+      </ul>
     </section>
     <section id="twitter_output" role="complementary">
       <a class="twitter-timeline"
@@ -149,9 +180,10 @@
                     placeholder="How was your visit?" minlength="5" maxlength="600" required></textarea>
         </div>
         <div class="ui-checkbox ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
-          <label for="entry-geolocation">Include Geolocation?</label>
-          <input type="checkbox" name="entry-geolocation" id="entry-geolocation"
-                 class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset">
+          <label for="entry-geolocation-toggle">Include Geolocation?</label>
+          <input type="checkbox" name="entry-geolocation-toggle" id="entry-geolocation-toggle"
+                 class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset" onchange="handleGeolocation();">
+          <input type="hidden" name="entry-geolocation" id="entry-geolocation" value="null">
         </div>
         <div id="camera-control" class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <img class="ui-mobile" id="img-preview" src="res/logo.png" alt="Photo Preview" title="Photo Preview" height="200" width="200">
@@ -162,6 +194,7 @@
         <input type="file" accept="image/*" id="files" name="files[]" capture="camera" required>
         <div id="clear-button-area"></div>
         <script src="app/PhotoController.js" type="application/javascript"></script>
+        <script src="app/GeolocationController.js" type="application/javascript"></script>
         <script src="app/Validation.js" type="application/javascript"></script>
         <button name="entry-submit" id="entry-submit">Add Entry</button>
       </form>
@@ -289,7 +322,7 @@
 
   <section id="mapPos" role="application" data-role="content">
     <!-- Content is dynamically added -->
-    <!-- TODO: Map -->
+    <h2 id="map-error">Map could not be loaded.</h2>
   </section>
 
   <footer data-role="footer" data-position="fixed" data-theme="b">

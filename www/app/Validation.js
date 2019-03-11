@@ -52,7 +52,7 @@ $('#entry-form').validate({
   submitHandler: function() {
     let name = document.getElementById('entry-name').value;
     let notes = document.getElementById('entry-notes').value;
-    let geolocation = document.getElementById('entry-geolocation').value; // TODO: Build actual geolocation
+    let geolocation = document.getElementById('entry-geolocation').value;
     let image = document.getElementById('files').files[0];
 
     let reader = new FileReader();

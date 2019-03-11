@@ -8,11 +8,12 @@ Conference.controller = (function ($, dataContext, document) {
   let currentMapWidth = 0;
   let currentMapHeight = 0;
 
-  const sessionsListSelector = "#entries-list-content";
-  const noSessionsCachedMsg = "<div>Your sessions list is empty.</div>";
-  const databaseNotInitialisedMsg = "<div>Your browser does not support local databases.</div>";
-  const SESSIONS_LIST_PAGE_ID = "entries";
-  const MAP_PAGE = "map";
+  const sessionsListSelector = '#entries-list-content';
+  const noSessionsCachedMsg = `<div>Your sessions list is empty.</div>`;
+  const databaseNotInitialisedMsg = `<div>Your browser does not support local databases.</div>`;
+  const SESSIONS_LIST_PAGE_ID = 'entries';
+  const MAP_PAGE = 'map';
+  const API_KEY = '***REMOVED***';
 
   // This changes the behaviour of the anchor <a> link
   // so that when we click an anchor link we change page without
@@ -108,7 +109,7 @@ Conference.controller = (function ($, dataContext, document) {
   };
 
   const deal_with_geolocation = function() {
-    var phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
+    let phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
       // Running on a mobile. Will have to add to this list for other mobiles.
       // We need the above because the deviceready event is a phonegap event and
@@ -160,8 +161,7 @@ Conference.controller = (function ($, dataContext, document) {
 
   const normalize_yql_response = function(response) {
     if (response.error) {
-      var error = { code: 0 };
-      handle_errors(error);
+      handle_errors(response.error);
       return;
     }
 
@@ -194,12 +194,18 @@ Conference.controller = (function ($, dataContext, document) {
     let the_height = get_map_height();
     let the_width = get_map_width();
 
-    let image_url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + position.coords.latitude + ',' +
-      position.coords.longitude + '&zoom=14&size=' +
-      the_width + 'x' + the_height + '&markers=color:blue|label:S|' +
-      position.coords.latitude + ',' + position.coords.longitude +
-      '&key=***REMOVED***';
+    // FIXME: coordinates is null and there's nothing much I can do about it
+    let coordinates = Conference.dataContext.getCoordinates();
+    let markersString = `&markers=color:blue|label:S|${position.coords.latitude},${position.coords.longitude}`;
+    if (coordinates) {
+      for (let i = 0; i < coordinates.length; i++) {
+        markersString += `&markers=color:blue|label:S|${coordinates[i]}`;
+      }
+    }
 
+    let image_url = `
+    https://maps.googleapis.com/maps/api/staticmap?center=${position.coords.latitude},${position.coords.longitude}
+    &zoom=14&size=${the_width}x${the_height}${markersString}&key=${API_KEY}`;
     $('#map-img').remove();
 
     jQuery('<img/>', {
@@ -208,6 +214,7 @@ Conference.controller = (function ($, dataContext, document) {
       title: 'Google map of my location'
     }).appendTo('#mapPos');
 
+    document.getElementById('map-error').remove();
     mapDisplayed = true;
   };
 

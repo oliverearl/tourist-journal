@@ -105,13 +105,34 @@ Conference.dataContext = (function ($) {
       return false;
     }
 
-    let currentLocation = '(52.415303, -4.082920)'; // TODO: Again, geolocation
+    if (form.geolocation === null || form.geolocation === 'null') {
+      form.geolocation = createRandomCoordinates();
+    }
+    //let currentLocation = '(52.415303, -4.082920)'; // TODO: Again, geolocation
 
-    db.transaction(function(tx) {
+    db.transaction(function (tx) {
       tx.executeSql('INSERT INTO entries (id, name, notes, photo, date_of_entry, location) VALUES (?, ?, ?, ?, ?, ?)',
-        [null, form.name, form.notes, form.image, Date.now(), currentLocation], createSuccess, errorDB);
+        [null, form.name, form.notes, form.image, Date.now(), form.geolocation], createSuccess, errorDB);
     }, errorDB, insertSuccess);
     return true;
+  };
+
+  const getCoordinates = function() {
+    let data = [];
+    let strippedResult;
+    if (db) {
+      db.transaction(function (tx) {
+        tx.executeSql('SELECT location FROM entries', [], function(tx, results) {
+          for (let i = 0; i < results.rows.length; i++) {
+            strippedResult = results.rows.item(i).location.replace(/[\])}[{(]/g, '');
+            if (strippedResult) {
+              data.push(strippedResult);
+            }
+          }
+        }, errorDB);
+      }, errorDB)
+    }
+    return data;
   };
 
   const getEntry = function(id) {
@@ -133,8 +154,7 @@ Conference.dataContext = (function ($) {
             image.title = data.name;
             date.innerText = new Date(data.date_of_entry).toLocaleString();
             geolocation.innerText = data.location;
-          }
-          , errorDB);
+          }, errorDB);
       }, errorDB);
     }
     return null;
@@ -144,6 +164,7 @@ Conference.dataContext = (function ($) {
     init:init,
     insertDatabase:insertDatabase,
     getEntry:getEntry,
+    getCoordinates:getCoordinates,
     processSessionsList:processSessionsList
   };
 
