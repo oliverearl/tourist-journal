@@ -75,7 +75,7 @@ Conference.dataContext = (function ($) {
 
   const querySessions = function (tx) {
     // For the moment we just deal with the first day
-    tx.executeSql("SELECT * FROM entries ORDER BY entries.date_of_entry ASC",
+    tx.executeSql("SELECT * FROM entries ORDER BY entries.date_of_entry DESC",
       [], queryListSuccess, errorDB);
   };
 

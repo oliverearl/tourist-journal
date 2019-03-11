@@ -29,7 +29,7 @@
   <!-- Scripts -->
   <!-- Libraries -->
   <script src="lib/jq/jquery-1.12.0.min.js" type="application/javascript"></script>
-  <script src="phonegap.js" type="application/javascript"></script> <!-- If PhoneGap library present -->
+  <script src="cordova.js" type="application/javascript"></script> <!-- If PhoneGap/Cordova library present -->
   <script src="lib/yqlgeo/yqlgeo.js" type="application/javascript"></script>
 
   <!-- Application Files -->
@@ -134,45 +134,53 @@
       <!-- TODO: Add Entry Form -->
       <form class="ui-content">
         <script type="application/javascript">
-          $(function() {
-            /**
-             *
-             */
-            $('#entry-camera').on('click', function() {
-              navigator.camera.getPicture(imageSuccess, imageFail, {
-                quality: 50,
-                destinationType: Camera.DestinationType.FILE_URI
-              });
+         /** let pictureSource;
+          let destinationSource;
+
+          document.addEventListener("deviceready", onDeviceReady, false);
+          function onDeviceReady() {
+            pictureSource = navigator.camera.PictureSourceType;
+            destinationSource = navigator.camera.DestinationType;
+          }
+
+          // Called when photo is successfully retrieved
+          function onPhotoDataSuccess(imageData) {
+            console.log(imageData);
+            let smallImage = document.getElementById('img-preview');
+            smallImage.src = `data:image/jpeg;base64,${imageData}`;
+          }
+
+          // When photo is successfully retrieved
+          function onPhotoURISuccess(imageURI) {
+            console.log(imageURI);
+            let largeImage = document.getElementById('img-preview');
+            largeImage.src = imageURI;
+          }
+
+          // A button calls this function
+          function capturePhoto() {
+            // Take picture and retrieve as base64
+            navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
+              quality: 50,
+              allowEdit: true,
+              destinationType: destinationType.DATA_URL
             });
+          }
 
-            /**
-             *
-             */
-            $('#entry-gallery').on('click', function() {
-              navigator.camera.getPicture(imageSuccess, imageFail, {
-                quality: 50,
-                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-                destinationType: Camera.DestinationType.FILE_URI
-              });
+          // A button calls this function
+          function getPhoto(source) {
+            // Retrieve image file from specified source
+            navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+              quality: 50,
+              destinationType: destinationType.FILE_URI,
+              sourceType: source
             });
+          }
 
-            /**
-             *
-             * @param image
-             */
-            const imageSuccess = function(image) {
-              let img = document.getElementById('img-preview');
-              img.src = image + '?' + Math.random();
-            };
-
-            /**
-             *
-             * @param err
-             */
-            const imageFail = function(err) {
-              alert(`Image not successfully chosen: ${err}.`);
-            }
-          });
+          // Called if something goes wrong
+          function onFail(message) {
+            alert(`Failed because: ${message}`);
+          } **/
         </script>
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <label for="entry-name">Name of Entry:</label>
@@ -191,20 +199,30 @@
           <input type="checkbox" name="entry-geolocation" id="entry-geolocation"
                  class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset" checked>
         </div>
-        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
+        <div id="camera-control" class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <img class="ui-mobile" id="img-preview" src="res/logo.png" alt="Photo Preview" height="200" width="200">
+          <!-- <button id="entry-camera" onclick="capturePhoto();">Take Photo</button> -->
+          <!-- <button id="entry-gallery" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">Upload Photo</button> -->
+          <input type="file" accept="image/*" id="file-entry" capture="camera">
           <script type="application/javascript">
-            function disableCamera() {
+            /**
+            // Quick fix at removing phone buttons and replacing them with HTML5 API buttons on desktop
+            if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) || (document.URL.indexOf('http://') !== -1 && document.URL.indexOf('https://') !== -1 )) {
+              document.getElementById('entry-camera').remove();
+              document.getElementById('entry-gallery').remove();
 
-              if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) || (document.URL.indexOf('http://') !== -1 && document.URL.indexOf('https://') !== -1 )) {
-                alert('Desktop');
-                document.getElementById('entry-camera').setAttribute('disabled', 'disabled');
-              }
+              let html5FileUpload = document.createElement('input');
+              $(html5FileUpload).attr({
+                'id': 'entry-file',
+                'name': 'entry-file',
+                'type': 'file',
+              });
+              document.getElementById('camera-control').appendChild(html5FileUpload);
             }
+            **/
           </script>
-          <button id="entry-camera" onload="disableCamera()">Take Photo</button>
-          <button id="entry-gallery">Upload Photo</button>
         </div>
+        <input type="file" accept="image/*" id="capture" capture="camera">
       </form>
       <button onclick="Conference.dataContext.insertDatabase();">Add Entry</button>
     </section>
