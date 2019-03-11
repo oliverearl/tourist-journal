@@ -66,7 +66,7 @@ Conference.controller = (function ($, dataContext, document) {
         .appendTo(view);
       for (let i = 0; i < sessionsCount; i += 1) {
         session = sessionsList[i];
-        if (session.photo !== null) {
+        if (session.photo !== null || session.photo !== undefined) {
           session.photo = `<img src="${session.photo}" alt="${session.name}" height="100" width="100">`;
         } else {
           session.photo = `<img src="res/logo.png" alt="No Photo Provided" height="100" width="100">`;

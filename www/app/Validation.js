@@ -14,6 +14,9 @@ $('#entry-form').validate({
       minlength: 5,
       maxlength: 600
     },
+    'files': {
+      required: true
+    }
   },
   messages: {
     'entry-name': {
@@ -25,6 +28,9 @@ $('#entry-form').validate({
       required: "Please enter a description.",
       minlength: "Minimum length of 5.",
       maxlength: "Maximum length of 600."
+    },
+    'files': {
+      required: "Please provide a photo or image."
     }
   },
 
@@ -44,24 +50,39 @@ $('#entry-form').validate({
    * @param
    */
   submitHandler: function() {
-    let submission = {
-      'name': document.getElementById('entry-name').value,
-      'notes': document.getElementById('entry-notes').value,
-      'geolocation': document.getElementById('entry-geolocation').value,
-      'image': document.getElementById('files').value
-    };
+    let name = document.getElementById('entry-name').value;
+    let notes = document.getElementById('entry-notes').value;
+    let geolocation = document.getElementById('entry-geolocation').value; // TODO: Build actual geolocation
+    let image = document.getElementById('files').files[0];
 
-    // Attempt to decode the image URI to check for a base64 string. If there's a catch, it needs to be changed to null
-/*    try {
-      window.atob(submission.image);
-    } catch(exception) {
-      alert('Not a base64 string!');
-      // Not a base64 image. Probably the default image.
-      submission.image = null;
-    }*/
+    let reader = new FileReader();
+    let base64 = null;
 
-    if (Conference.dataContext.insertDatabase(submission)) {
-      alert('Success');
+    // It is such a pain in the ass to get base64 strings
+    if (image) {
+      reader.readAsDataURL(image);
+      reader.onload = function() {
+        base64 = reader.result;
+
+        // Build submission object
+        let submission = {
+          'name': name,
+          'notes': notes,
+          'geolocation': geolocation,
+          'image': base64
+        };
+
+        // Submit to database
+        if (Conference.dataContext.insertDatabase(submission)) {
+          // Reset form
+        } else {
+          alert('Failed to submit');
+        }
+
+        $(':mobile-pagecontainer').pagecontainer('change', '#entries', {
+          reload: false
+        });
+      };
     }
   }
 });
