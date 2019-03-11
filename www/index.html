@@ -135,7 +135,6 @@
       </header>
       <!-- TODO: Add Entry Form -->
       <form class="ui-content" id="entry-form" name="entry-form">
-        <div id="error-area"><ul id="error-list"></ul></div>
         <!-- <script src="app/CordovaPhotoController.js" type="application/javascript"></script> -->
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <label for="entry-name">Name of Entry:</label>
@@ -161,8 +160,7 @@
           <!-- <script src="app/HTML5onDesktop.js"type="application/javascript"></script> -->
         </div>
         <input type="file" accept="image/*" id="files" name="files[]" capture="camera">
-        <div id="clear-button-area">
-        </div>
+        <div id="clear-button-area"></div>
         <script src="app/PhotoController.js" type="application/javascript"></script>
         <script src="app/Validation.js" type="application/javascript"></script>
         <button name="entry-submit" id="entry-submit">Add Entry</button>

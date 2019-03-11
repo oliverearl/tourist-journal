@@ -27,6 +27,7 @@ $('#entry-form').validate({
       maxlength: "Maximum length of 600."
     }
   },
+
   /**
    *
    * @param error
@@ -37,12 +38,30 @@ $('#entry-form').validate({
     error.appendTo(element.parent().prev());
     //$(`<li class="error">${error}</li>`).appendTo($('#error-list'));
   },
+
   /**
    *
-   * @param form
+   * @param
    */
-  submitHandler: function(form) {
-    // Clear form and process data
-    alert('Success');
+  submitHandler: function() {
+    let submission = {
+      'name': document.getElementById('entry-name').value,
+      'notes': document.getElementById('entry-notes').value,
+      'geolocation': document.getElementById('entry-geolocation').value,
+      'image': document.getElementById('files').value
+    };
+
+    // Attempt to decode the image URI to check for a base64 string. If there's a catch, it needs to be changed to null
+/*    try {
+      window.atob(submission.image);
+    } catch(exception) {
+      alert('Not a base64 string!');
+      // Not a base64 image. Probably the default image.
+      submission.image = null;
+    }*/
+
+    if (Conference.dataContext.insertDatabase(submission)) {
+      alert('Success');
+    }
   }
 });
