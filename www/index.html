@@ -133,55 +133,7 @@
       </header>
       <!-- TODO: Add Entry Form -->
       <form class="ui-content">
-        <script type="application/javascript">
-         /** let pictureSource;
-          let destinationSource;
-
-          document.addEventListener("deviceready", onDeviceReady, false);
-          function onDeviceReady() {
-            pictureSource = navigator.camera.PictureSourceType;
-            destinationSource = navigator.camera.DestinationType;
-          }
-
-          // Called when photo is successfully retrieved
-          function onPhotoDataSuccess(imageData) {
-            console.log(imageData);
-            let smallImage = document.getElementById('img-preview');
-            smallImage.src = `data:image/jpeg;base64,${imageData}`;
-          }
-
-          // When photo is successfully retrieved
-          function onPhotoURISuccess(imageURI) {
-            console.log(imageURI);
-            let largeImage = document.getElementById('img-preview');
-            largeImage.src = imageURI;
-          }
-
-          // A button calls this function
-          function capturePhoto() {
-            // Take picture and retrieve as base64
-            navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
-              quality: 50,
-              allowEdit: true,
-              destinationType: destinationType.DATA_URL
-            });
-          }
-
-          // A button calls this function
-          function getPhoto(source) {
-            // Retrieve image file from specified source
-            navigator.camera.getPicture(onPhotoURISuccess, onFail, {
-              quality: 50,
-              destinationType: destinationType.FILE_URI,
-              sourceType: source
-            });
-          }
-
-          // Called if something goes wrong
-          function onFail(message) {
-            alert(`Failed because: ${message}`);
-          } **/
-        </script>
+        <!-- <script src="app/CordovaPhotoController.js" type="application/javascript"></script> -->
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <label for="entry-name">Name of Entry:</label>
           <input type="text" name="entry-name" id="entry-name"
@@ -203,7 +155,7 @@
           <img class="ui-mobile" id="img-preview" src="res/logo.png" alt="Photo Preview" title="Photo Preview" height="200" width="200">
           <!-- <button id="entry-camera" onclick="capturePhoto();">Take Photo</button> -->
           <!-- <button id="entry-gallery" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">Upload Photo</button> -->
-          <script src="app/HTML5onDesktop.js"type="application/javascript"></script>
+          <!-- <script src="app/HTML5onDesktop.js"type="application/javascript"></script> -->
         </div>
         <input type="file" accept="image/*" id="files" name="files[]" capture="camera">
         <div id="clear-button-area">
@@ -252,7 +204,6 @@
         <h2>List Entries</h2>
       </header>
       <section data-role="content" class="indexPos" id="entries-list-content">
-        <!-- TODO: Entries -->
 
       </section>
     </section>
