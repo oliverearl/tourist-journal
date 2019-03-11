@@ -108,8 +108,6 @@ Conference.controller = (function ($, dataContext, document) {
     });
   };
 
-
-
   const deal_with_geolocation = function() {
     var phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
@@ -131,7 +129,6 @@ Conference.controller = (function ($, dataContext, document) {
   };
 
   const initiate_geolocation = function() {
-
     // Do we have built-in support for geolocation (either native browser or phonegap)?
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(handle_geolocation_query, handle_errors);
