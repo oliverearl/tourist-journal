@@ -108,6 +108,8 @@ Conference.controller = (function ($, dataContext, document) {
     });
   };
 
+
+
   const deal_with_geolocation = function() {
     var phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
@@ -200,7 +202,7 @@ Conference.controller = (function ($, dataContext, document) {
       position.coords.longitude + '&zoom=14&size=' +
       the_width + 'x' + the_height + '&markers=color:blue|label:S|' +
       position.coords.latitude + ',' + position.coords.longitude +
-      '&key=ADD YOUR API KEY HERE';
+      '&key=***REMOVED***';
 
     $('#map-img').remove();
 

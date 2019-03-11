@@ -133,6 +133,47 @@
       </header>
       <!-- TODO: Add Entry Form -->
       <form class="ui-content">
+        <script type="application/javascript">
+          $(function() {
+            /**
+             *
+             */
+            $('#entry-camera').on('click', function() {
+              navigator.camera.getPicture(imageSuccess, imageFail, {
+                quality: 50,
+                destinationType: Camera.DestinationType.FILE_URI
+              });
+            });
+
+            /**
+             *
+             */
+            $('#entry-gallery').on('click', function() {
+              navigator.camera.getPicture(imageSuccess, imageFail, {
+                quality: 50,
+                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                destinationType: Camera.DestinationType.FILE_URI
+              });
+            });
+
+            /**
+             *
+             * @param image
+             */
+            const imageSuccess = function(image) {
+              let img = document.getElementById('img-preview');
+              img.src = image + '?' + Math.random();
+            };
+
+            /**
+             *
+             * @param err
+             */
+            const imageFail = function(err) {
+              alert(`Image not successfully chosen: ${err}.`);
+            }
+          });
+        </script>
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <label for="entry-name">Name of Entry:</label>
           <input type="text" name="entry-name" id="entry-name"
@@ -146,24 +187,26 @@
                     placeholder="How was your visit?" minlength="5" maxlength="600" required></textarea>
         </div>
         <div class="ui-checkbox ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
-          <label for="entry-geolocation">Use Geolocation?</label>
+          <label for="entry-geolocation">Include Geolocation?</label>
           <input type="checkbox" name="entry-geolocation" id="entry-geolocation"
-                 class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset"
-                 checked>
+                 class="ui-checkbox ui-body-b ui-corner-all ui-shadow-inset" checked>
         </div>
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
-          <label for="entry-latitude"><del>Latitude:</del></label>
-          <input type="number" name="entry-latitude" id="entry-latitude"
-                 class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
-                 placeholder="Disabled" minlength="1" maxlength="20" disabled>
-        </div>
-        <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
-          <label for="entry-longitude"><del>Longitude:</del></label>
-          <input type="number" name="entry-longitude" id="entry-longitude"
-                 class="ui-input-text ui-body-b ui-corner-all ui-shadow-inset"
-                 placeholder="Disabled" minlength="1" maxlength="20" disabled>
+          <img class="ui-mobile" id="img-preview" src="res/logo.png" alt="Photo Preview" height="200" width="200">
+          <script type="application/javascript">
+            function disableCamera() {
+
+              if (!navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) || (document.URL.indexOf('http://') !== -1 && document.URL.indexOf('https://') !== -1 )) {
+                alert('Desktop');
+                document.getElementById('entry-camera').setAttribute('disabled', 'disabled');
+              }
+            }
+          </script>
+          <button id="entry-camera" onload="disableCamera()">Take Photo</button>
+          <button id="entry-gallery">Upload Photo</button>
         </div>
       </form>
+      <button onclick="Conference.dataContext.insertDatabase();">Add Entry</button>
     </section>
   </section>
 
