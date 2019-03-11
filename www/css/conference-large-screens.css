@@ -10,6 +10,10 @@ header.page_header {
   /*height: 200px;*/
 }
 
+.error {
+  color:red;
+}
+
 .logo {
   float: left;
   display: block;

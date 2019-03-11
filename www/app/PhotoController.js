@@ -1,7 +1,7 @@
 // This code is derived from an extremely useful tutorial on HTML5 File APIs by Eric Bidelman
 // I've had to tinker with it a little bit to get it to work with my application of course
 // https://www.html5rocks.com/en/tutorials/file/dndfiles/
-'use strict';
+"use strict";
 /**
  *
  */

@@ -36,8 +36,10 @@
   <script src="app/DataContext.js" type="application/javascript"></script>
   <script src="app/Controller.js" type="application/javascript"></script>
 
-  <!-- jQuery Mobile comes last. I have no f***ing idea why. This caused me so much pain. -->
+  <!-- jQuery Mobile comes after my own source code. I have no f***ing idea why. This caused me so much pain. -->
   <script src="lib/jqm/jquery.mobile-1.4.5.min.js" type="application/javascript"></script>
+  <!-- jQuery Validation Plugin -->
+  <script src="lib/jqv/jquery.validate.min.js" type="application/javascript"></script>
 </head>
 <body>
 
@@ -132,7 +134,8 @@
         <h2>Add Entry</h2>
       </header>
       <!-- TODO: Add Entry Form -->
-      <form class="ui-content">
+      <form class="ui-content" id="entry-form" name="entry-form">
+        <div id="error-area"><ul id="error-list"></ul></div>
         <!-- <script src="app/CordovaPhotoController.js" type="application/javascript"></script> -->
         <div class="ui-textinput ui-corner-all ui-shadow-inset ui-textinput-text ui-body-inherit" data-role="fieldcontain">
           <label for="entry-name">Name of Entry:</label>
@@ -161,8 +164,9 @@
         <div id="clear-button-area">
         </div>
         <script src="app/PhotoController.js" type="application/javascript"></script>
+        <script src="app/Validation.js" type="application/javascript"></script>
+        <button name="entry-submit" id="entry-submit">Add Entry</button>
       </form>
-      <button onclick="Conference.dataContext.insertDatabase();">Add Entry</button>
     </section>
   </section>
 

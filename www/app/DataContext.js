@@ -87,6 +87,9 @@ Conference.dataContext = (function ($) {
   };
 
   const insertDatabase = function() {
+    // Grab all of the input from the form
+    // Validate and determine if something is empty or whatever
+
     alert('Hey, this works!');
   };
 
