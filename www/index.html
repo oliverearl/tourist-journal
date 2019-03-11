@@ -129,7 +129,7 @@
   </header>
 
   <section data-role="content">
-    <section id="main_text" role="main">
+    <section id="add_entry_text" role="main">
       <header>
         <h2>Add Entry</h2>
       </header>
@@ -201,7 +201,7 @@
   </header>
 
   <section data-role="content">
-    <section id="main_text" role="main">
+    <section id="entries_text" role="main">
       <header>
         <h2>List Entries</h2>
       </header>
@@ -231,6 +231,50 @@
   </footer>
 </article>
 <!-- End List Entries -->
+
+<!-- Entry Details -->
+<article id="details" role="document" aria-live="assertive" aria-atomic="true" data-role="page">
+  <header class="page_header" role="banner" data-role="header" data-theme="b" data-position="fixed">
+    <div class="logo">
+      <img src="res/logo.png" alt="I'm a Tourist Logo"/>
+    </div>
+    <div>
+      <h1>I'm a Tourist!</h1>
+    </div>
+  </header>
+
+  <section id="entry_main_text" role="main">
+    <header>
+      <h2 id="details-name"></h2>
+      <h3 id="details-date_of_entry"></h3>
+      <h3 id="details-geolocation"></h3>
+    </header>
+    <hr>
+    <p><img id="details-img" src="" alt="" title="" height="400" width="400"></p>
+    <p id="details-notes"></p>
+    <script src="app/Details.js" type="application/javascript"></script>
+  </section>
+
+  <footer data-role="footer" data-position="fixed" data-theme="b">
+    <nav data-role="navbar">
+      <ul>
+        <li>
+          <a href="#home_page" data-role="tab" data-icon="home">Home</a>
+        </li>
+        <li>
+          <a href="#add" data-role="tab" data-icon="plus">Add Entry</a>
+        </li>
+        <li>
+          <a href="#entries" class="ui-btn-active ui-state-persist" data-role="tab" data-icon="bars">List Entries</a>
+        </li>
+        <li>
+          <a href="#map" data-role="tab" data-icon="location">Map</a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+</article>
+<!-- End Entry Details -->
 
 <!-- Add Map -->
 <article id="map" role="document" aria-live="assertive" aria-atomic="true" data-role="page">

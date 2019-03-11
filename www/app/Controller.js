@@ -73,12 +73,11 @@ Conference.controller = (function ($, dataContext, document) {
         }
         listItem = `
 <li>
-  <a class="ui-listview-item- button ui-button" href="#">
+  <a class="ui-listview-item- button ui-button" href="#details" onclick="fillDetails(${session.id});">
     <span class="ui-listview-item-icon ui-icon ui-icon-caret-r ui-widget-icon-floatend"></span>
     ${session.photo}
     <h3>${session.name}</h3>
     <p>${new Date(session.date_of_entry).toLocaleString()}</p>
-    <p>${session.notes}</p>
   </a>
 </li>`;
         liArray.push(listItem);

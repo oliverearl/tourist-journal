@@ -42,7 +42,11 @@ Conference.dataContext = (function ($) {
   };
 
   const successPopulate = function (tx, results) {
-    console.log(`Success! ${results}`)
+    console.log(`Success: ${results}`)
+  };
+
+  const retrieveSuccess = function (tx, results) {
+    console.log(`Successfully retrieved: ${results}`)
   };
 
   const errorDB = function (err) {
@@ -113,9 +117,36 @@ Conference.dataContext = (function ($) {
     return true;
   };
 
+  const getEntry = function(id) {
+    if (id && db) {
+      db.transaction(function(tx) {
+        tx.executeSql("SELECT * FROM entries WHERE entries.id = ?",
+          [id], function(tx, results) {
+            let name = document.getElementById('details-name');
+            let notes = document.getElementById('details-notes');
+            let image = document.getElementById('details-img');
+            let date = document.getElementById('details-date_of_entry');
+            let geolocation = document.getElementById('details-geolocation');
+            let data = results.rows.item(0);
+
+            name.innerText = data.name;
+            notes.innerText = data.notes;
+            image.src = data.photo;
+            image.alt = data.name;
+            image.title = data.name;
+            date.innerText = new Date(data.date_of_entry).toLocaleString();
+            geolocation.innerText = data.location;
+          }
+          , errorDB);
+      }, errorDB);
+    }
+    return null;
+  };
+
   const pub = {
     init:init,
     insertDatabase:insertDatabase,
+    getEntry:getEntry,
     processSessionsList:processSessionsList
   };
 
