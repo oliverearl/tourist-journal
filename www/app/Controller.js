@@ -2,6 +2,14 @@ var Conference = Conference || {};
 
 Conference.controller = (function ($, dataContext, document) {
   "use strict";
+  /**
+   * Controller.js
+   * @author Oliver Earl <ole4@aber.ac.uk>
+   *
+   * Main controller for the application that handles functions ranging from behaviour triggered by
+   * changing pages, to rendering database-retrieved data, to rendering the map page and building up
+   * the map and its token.
+   */
 
   let position = null;
   let mapDisplayed = false;
@@ -15,23 +23,29 @@ Conference.controller = (function ($, dataContext, document) {
   const MAP_PAGE = 'map';
   const API_KEY = '***REMOVED***';
 
-  // This changes the behaviour of the anchor <a> link
-  // so that when we click an anchor link we change page without
-  // updating the browser's history stack (changeHash: false).
-  // We also don't want the usual page transition effect but
-  // rather to have no transition (i.e. tabbed behaviour)
+  /**
+   * Initialise Page
+   * @param event
+   *
+   * Triggers the Change Page Back History function to handle browser navigation.
+   */
   const initialisePage = function(event) {
     change_page_back_history();
   };
 
+  /**
+   * On Page Change
+   * @param event
+   * @param data
+   *
+   * Triggers specific behaviours when changing over to specific pages. Such as processing and rendering
+   * entries in the database on the entries page, and also handling geolocation and rendering the map
+   * when navigating to the map tab. This is especially important to accurately render the map according to the
+   * viewport.
+   */
   const onPageChange = function(event, data) {
-    // Find the id of the page
     let toPageId = data.toPage.attr("id");
 
-    // If we're about to display the map tab (page) then
-    // if not already displayed then display, else if
-    // displayed and window dimensions changed then redisplay
-    // with new dimensions
     switch (toPageId) {
       case SESSIONS_LIST_PAGE_ID:
         dataContext.processSessionsList(renderSessionsList);
@@ -45,6 +59,15 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
+  /**
+   * Render Sessions List
+   * @param sessionsList
+   *
+   * So historically named from the previous application that this was built from.
+   *
+   * Properly renders the List Entries page with data retrieved from the database, as well as the filter form and
+   * base64 images, or renders a placeholder image in absence of an image.
+   */
   const renderSessionsList = function(sessionsList) {
     let view = $(sessionsListSelector);
     view.empty();
@@ -89,12 +112,26 @@ Conference.controller = (function ($, dataContext, document) {
     }
   };
 
+  /**
+   * No Data Display
+   * @param event
+   * @param data
+   *
+   * If no data is retrieved, or the database is inaccessible, this behaviour determines what is displayed on
+   * said page.
+   */
   const noDataDisplay = function(event, data) {
     let view = $(sessionsListSelector);
     view.empty();
     $(databaseNotInitialisedMsg).appendTo(view);
   };
 
+  /**
+   * Change Page Back History
+   *
+   * This changes the behaviour of anchor tags so that when we click an anchor link we change the page without
+   * updating the browser's history stack. We also don't want the usual page transition behaviour.
+   */
   const change_page_back_history = function() {
     $('a[data-role="tab"]').each(function() {
       const anchor = $(this);
@@ -108,57 +145,81 @@ Conference.controller = (function ($, dataContext, document) {
     });
   };
 
+  /**
+   * Deal with Geolocation
+   *
+   * Activates the correct way of retrieving device geolocation. It determines whether the application is running on
+   * a mobile device first, and if that's the case, is it a Cordova application. If running on Cordova, fetch
+   * geolocation once its services are available. Otherwise, geolocation services on mobile browsers can be retrieved
+   * immediately.
+   */
   const deal_with_geolocation = function() {
     let phoneGapApp = (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1 );
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
-      // Running on a mobile. Will have to add to this list for other mobiles.
-      // We need the above because the deviceready event is a phonegap event and
-      // if we have access to PhoneGap we want to wait until it is ready before
-      // initialising geolocation services
       if (phoneGapApp) {
-        //alert('Running as PhoneGapp app');
         document.addEventListener("deviceready", initiate_geolocation, false);
       }
       else {
-        initiate_geolocation(); // Directly from the mobile browser
+        // Mobile browsers
+        initiate_geolocation();
       }
     } else {
-      //alert('Running as desktop browser app');
-      initiate_geolocation(); // Directly from the browser
+      // Desktop browser
+      initiate_geolocation();
     }
   };
 
+  /**
+   * Initiate Geolocation
+   *
+   * Determine whether native geolocation services are available. If they are, use them and callback Handle Geolocation
+   * Query. Otherwise, use the yqlgeo polyfill and normalise its response before passing it further on to the same
+   * function as the aforementioned.
+   */
   const initiate_geolocation = function() {
-    // Do we have built-in support for geolocation (either native browser or phonegap)?
     if (navigator.geolocation) {
+      // Native services
       navigator.geolocation.getCurrentPosition(handle_geolocation_query, handle_errors);
     }
     else {
-      // We don't so let's try a polyfill
+      // Polyfill
       yqlgeo.get('visitor', normalize_yql_response);
     }
   };
 
+  /**
+   * Handle Errro
+   * @param error
+   *
+   * If any errors are passed from either geolocation service, then print said errors to the console.
+   */
   const handle_errors = function(error) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        alert("user did not share geolocation data");
+        console.error(`User did not share geolocation data: ${error.code}`);
         break;
 
       case error.POSITION_UNAVAILABLE:
-        alert("could not detect current position");
+        console.error(`Could not retrieve user's location: ${error.code}`);
         break;
 
       case error.TIMEOUT:
-        alert("retrieving position timed out");
+        console.error(`Request timeout: ${error.code}`);
         break;
 
       default:
-        alert("unknown error");
+        console.error(`Unknown error: ${error.code}`);
         break;
     }
   };
 
+  /**
+   * Normalise YQL Response
+   * @param response
+   *
+   * The output from the YQL polyfill differs from the native geolocation services. This function
+   * will normalise it so that it can be used by the same functions, including error messages.
+   */
   const normalize_yql_response = function(response) {
     if (response.error) {
       handle_errors(response.error);
@@ -176,18 +237,40 @@ Conference.controller = (function ($, dataContext, document) {
         country: response.place.country.content
       }
     };
-
     handle_geolocation_query(position);
   };
 
+  /**
+   * Get Map Height
+   * @returns {number}
+   *
+   * Calculates what the map height should be.
+   */
   const get_map_height = function() {
     return $(window).height() - ($('#maptitle').height() + $('#mapfooter').height());
   };
 
+  /**
+   * Get Map Width
+   * @returns {number | jQuery}
+   *
+   * Calculates what the map width should be.
+   */
   const get_map_width = function() {
     return $(window).width();
   };
 
+  /**
+   * Handle Geolocation Query
+   * @param pos
+   *
+   * This function will take the position object fetched from either native geolocation services or from a polyfill,
+   * and then constructs a specific image URL string used by Google Maps Static API, consisting of all the coordinates
+   * fetched from the database, and the user's current position.
+   *
+   * Currently this function is bugged as the coordinates are retrieved from the database, but can't be returned
+   * for some reason. It just returns null. So only the user's current position is rendered on the map.
+   */
   const handle_geolocation_query = function(pos) {
     position = pos;
 
@@ -218,27 +301,28 @@ Conference.controller = (function ($, dataContext, document) {
     mapDisplayed = true;
   };
 
+  /**
+   * Init
+   *
+   * The bootstrapping function that determines basic behaviours from the application. Predominatly page changing
+   * behaviour, initialising the database, and fallback behaviour if it can't be initialised.
+   */
   const init = function() {
-    // The pagechange event is fired every time we switch pages or display a page
-    // for the first time.
     let d = $(document);
     let databaseInitialised = dataContext.init();
     if (!databaseInitialised) {
       d.on('pagechange', $(document), noDataDisplay);
     }
-
-    // The pagechange event is fired every time we switch pages or display a page
-    // for the first time.
     d.on('pagechange', $(document), onPageChange);
-    // The pageinit event is fired when jQM loads a new page for the first time into the
-    // Document Object Model (DOM). When this happens we want the initialisePage function
-    // to be called.
     d.on('pageinit', $(document), initialisePage);
   };
 
 
-  // Provides an object wrapper for the "public" functions that we return to external code so that they
-  // know which functions they can call. In this case just init.
+  /**
+   * Public functions
+   *
+   * @type {{init: init}}
+   */
   const pub = {
     init: init
   };
@@ -246,7 +330,6 @@ Conference.controller = (function ($, dataContext, document) {
   return pub;
 }(jQuery, Conference.dataContext, document));
 
-// Called when jQuery Mobile is loaded and ready to use.
 $(document).on('mobileinit', $(document), function () {
   Conference.controller.init();
 });

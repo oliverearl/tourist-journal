@@ -1,6 +1,8 @@
 "use strict";
 /**
+ * Validation
  *
+ * jQuery Validation Library. Provides additional validation services.
  */
 $('#entry-form').validate({
   rules: {
@@ -35,9 +37,11 @@ $('#entry-form').validate({
   },
 
   /**
-   *
+   * Error Placement
    * @param error
    * @param element
+   *
+   * Places error text onto the offending element when the user violates validation constraints.
    */
   errorPlacement: function(error, element) {
     // Put the error message just before the input element
@@ -46,8 +50,11 @@ $('#entry-form').validate({
   },
 
   /**
-   *
+   * Submit Handler
    * @param
+   *
+   * This crazy function will construct an object for submission once validation is passed, submits it to the database,
+   * and if successful, changes the page to the List Entries tab.
    */
   submitHandler: function() {
     let name = document.getElementById('entry-name').value;

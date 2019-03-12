@@ -346,6 +346,7 @@ Temporary Items
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+.idea/
 .idea/deployment.xml
 .idea/webServers.xml
 .idea/**/workspace.xml

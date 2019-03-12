@@ -1,9 +1,8 @@
-// This code is derived from an extremely useful tutorial on HTML5 File APIs by Eric Bidelman
-// I've had to tinker with it a little bit to get it to work with my application of course
-// https://www.html5rocks.com/en/tutorials/file/dndfiles/
 "use strict";
 /**
+ * Clear Button
  *
+ * Constructs a button to remove the image if you want to change your mind and choose another image.
  */
 const clearButton = function() {
   // Now build a new clear button to allow the user to delete their photo
@@ -19,7 +18,10 @@ const clearButton = function() {
 };
 
 /**
+ * Clear Photo
  *
+ * This function is triggered once the clear image button is pressed and resets the image back to a placeholder, and
+ * clears form data. It also removes the button.
  */
 const clearPhoto = function() {
   let image = document.getElementById('img-preview');
@@ -34,12 +36,18 @@ const clearPhoto = function() {
 };
 
 /**
- *
+ * Handle File Select
  * @param event
+ *
+ * Reads base64 data using the HTML5 File API and renders it in a preview thumbnail.
+ * This code is derived from an extremely useful tutorial on HTML5 File APIs by Eric Bidelman
+ * I've had to tinker with it a little bit to get it to work with my application of course
+ * https://www.html5rocks.com/en/tutorials/file/dndfiles/
  */
 const handleFileSelect = function(event) {
   let files = event.target.files; // FileList object
-  // Loop through the FileList and render image files as thumbnails.
+
+  // Black magic
   for (let i = 0, f; f = files[i]; i++) {
     // Only process image files.
     if (!f.type.match('image.*')) {
