@@ -86,10 +86,8 @@ typings/
 
 ### Android ###
 # Built application files
-*.apk
 *.ap_
 *.aab
-!Conferenceapp-Debug.apk
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -98,7 +96,6 @@ typings/
 *.class
 
 # Generated files
-bin/
 gen/
 out/
 
