@@ -108,7 +108,7 @@ Conference.dataContext = (function ($) {
     if (form.geolocation === null || form.geolocation === 'null') {
       form.geolocation = createRandomCoordinates();
     }
-    //let currentLocation = '(52.415303, -4.082920)'; // TODO: Again, geolocation
+    //let currentLocation = '(52.415303, -4.082920)'; //
 
     db.transaction(function (tx) {
       tx.executeSql('INSERT INTO entries (id, name, notes, photo, date_of_entry, location) VALUES (?, ?, ?, ?, ?, ?)',
