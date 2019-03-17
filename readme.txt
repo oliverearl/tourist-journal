@@ -4,7 +4,7 @@ Oliver Earl
 ole4@aber.ac.uk
 
 A GitHub repository for this application is available:
-https://www.github.com/oliverearl/tourist-webapp
+https://github.com/oliverearl/tourist-journal
 
 ***********************
 General information
